@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+<div class="hero-section text-center text-white d-flex align-items-center justify-content-center">
+  <div>
+    <h1>Selamat Datang di Ibadah Finder</h1>
+    <p class="lead">Platform ini dirancang untuk mempermudah Anda dalam menemukan tempat ibadah.</p>
+    <a href="/map" class="btn btn-lg btn-primary mt-3">Jelajahi Peta</a>
+  </div>
+</div>
+
+<div class="container my-5">
+  <h2 class="text">Fitur Utama</h2>
+  <p>Ibadah Finder menawarkan berbagai fitur yang membantu Anda menemukan tempat ibadah dengan lebih mudah.</p>
+  <div class="row mt-4">
+    <div class="col-md-4 text-center">
+      <i class="fas fa-map-marked-alt fa-3x mb-3 text"></i>
+      <h4>Data Peta Interaktif</h4>
+      <p>Jelajahi peta interaktif dengan data yang terintegrasi langsung dari PostGIS.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <i class="fas fa-globe fa-3x mb-3 text"></i>
+      <h4>Sarana Ibadah</h4>
+      <p>Mengeksplorasi tempat ibadah yang ingin anda kunjungi.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <i class="fas fa-chart-line fa-3x mb-3 text"></i>
+      <h4>Analisis Data</h4>
+      <p>Berikan wawasan dan analisis mendalam untuk data geografi Anda.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,403 @@
+{% extends "base.html" %} {% block content %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geografi Explorer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+      }
+
+      #map {
+        height: 500px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .hero-header {
+        text-align: center;
+        background: #4ca1af;
+        color: white;
+        padding: 50px 20px;
+        border-radius: 10px;
+      }
+
+      .hero-header h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-header p {
+        font-size: 1.2rem;
+        margin-top: 10px;
+      }
+
+      .filter-container {
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-container input {
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+
+      .analysis-container {
+        margin-top: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .analysis-container h5 {
+        font-size: 1.5rem;
+        color: #0d47a1;
+        margin-bottom: 20px;
+      }
+
+      .analysis-container ul {
+        list-style-type: none;
+        padding: 0;
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .analysis-container ul li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .analysis-container ul li i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+        color: #388e3c;
+      }
+
+      .btn-primary {
+        background: #1976d2;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .btn-primary:hover {
+        background: #0d47a1;
+      }
+
+      .route-info {
+        margin-top: 20px;
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        font-size: 0.9rem;
+        overflow-y: auto;
+      }
+
+      .highlight {
+        background-color: yellow;
+      }
+
+      #categoryChart {
+        max-width: 600px;
+        margin: 20px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="hero-header">
+        <h1>Peta Tempat Ibadah Bandar Lampung</h1>
+        <p class="text-white">Mengeksplorasi tempat ibadah yang ingin anda kunjungi.</p>
+      </div>
+
+      <div class="filter-container mt-4">
+        <h4>Filter Kategori</h4>
+        <input type="text" id="filter-search" class="form-control" placeholder="Cari kategori..." />
+        <ul id="filter-list" class="list-unstyled mt-3">
+          <li>
+            <input type="checkbox" id="filter-gereja" class="filter-checkbox" data-category="Gereja" checked />
+            <label for="filter-gereja">
+              <span class="rounded-circle" style="background-color: blue; width: 15px; height: 15px; display: inline-block"></span>
+              Gereja (<span id="count-gereja">0</span>)
+            </label>
+          </li>
+          <li>
+            <input type="checkbox" id="filter-kelenteng" class="filter-checkbox" data-category="Kelenteng" checked />
+            <label for="filter-kelenteng">
+              <span class="rounded-circle" style="background-color: red; width: 15px; height: 15px; display: inline-block"></span>
+              Kelenteng (<span id="count-kelenteng">0</span>)
+            </label>
+          </li>
+          <li>
+            <input type="checkbox" id="filter-masjid" class="filter-checkbox" data-category="Masjid" checked />
+            <label for="filter-masjid">
+              <span class="rounded-circle" style="background-color: green; width: 15px; height: 15px; display: inline-block"></span>
+              Masjid (<span id="count-masjid">0</span>)
+            </label>
+          </li>
+          <li>
+            <input type="checkbox" id="filter-pura" class="filter-checkbox" data-category="Pura" checked />
+            <label for="filter-pura">
+              <span class="rounded-circle" style="background-color: orange; width: 15px; height: 15px; display: inline-block"></span>
+              Pura (<span id="count-pura">0</span>)
+            </label>
+          </li>
+          <li>
+            <input type="checkbox" id="filter-vihara" class="filter-checkbox" data-category="Vihara" checked />
+            <label for="filter-vihara">
+              <span class="rounded-circle" style="background-color: yellow; width: 15px; height: 15px; display: inline-block"></span>
+              Vihara (<span id="count-vihara">0</span>)
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <div id="map" class="mt-4"></div>
+
+      <div class="route-info" id="route-info" style="display: none"></div>
+
+      <div class="analysis-container mt-4">
+        <h5>Analisis Data</h5>
+        <ul>
+          <li><i class="fas fa-chart-bar"></i><strong>Total Tempat Ibadah:</strong> <span id="total-places">0</span></li>
+          <li><i class="fas fa-arrow-up"></i><strong>Kategori dengan Jumlah Tertinggi:</strong> <span id="highest-category">-</span></li>
+          <li><i class="fas fa-arrow-down"></i><strong>Kategori dengan Jumlah Terendah:</strong> <span id="lowest-category">-</span></li>
+          <li><i class="fas fa-percentage"></i><strong>Persentase Tempat Ibadah:</strong> <span id="percentage-places">-</span></li>
+          <li><i class="fas fa-map-marker-alt"></i><strong>Lokasi Terdekat dari Anda:</strong> <span id="nearest-location">-</span></li>
+        </ul>
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      var pointsData = {{ points | safe }};
+      var map = L.map('map').setView([-5.4298, 105.2615], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      let markersLayerGroup = L.layerGroup().addTo(map);
+      let userLocationMarker = null;
+      let routingControl = null;
+
+      function getColor(remark) {
+        switch (remark) {
+          case "Gereja": return "blue";
+          case "Kelenteng": return "red";
+          case "Masjid": return "green";
+          case "Pura": return "orange";
+          case "Vihara": return "yellow";
+          default: return "gray";
+        }
+      }
+
+      function addCurrentLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(position => {
+            const userLatLng = [position.coords.latitude, position.coords.longitude];
+
+            userLocationMarker = L.marker(userLatLng, {
+              icon: L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+              })
+            }).addTo(map);
+
+            userLocationMarker.bindPopup("<strong>Lokasi Anda Saat Ini</strong>").openPopup();
+            map.setView(userLatLng, 14);
+          }, error => {
+            alert("Geolocation tidak dapat diakses. Pastikan geolocation aktif di browser Anda. Error: " + error.message);
+          }, {
+            timeout: 10000 // Menambahkan timeout untuk geolocation
+          });
+        } else {
+          alert("Geolocation tidak didukung oleh browser Anda.");
+        }
+      }
+
+      function updateMarkers() {
+        markersLayerGroup.clearLayers();
+        if (routingControl) {
+          map.removeControl(routingControl);
+        }
+
+        const selectedCategories = Array.from(document.querySelectorAll('.filter-checkbox:checked'))
+          .map(checkbox => checkbox.getAttribute('data-category'));
+
+        const filteredData = pointsData.features.filter(feature => selectedCategories.includes(feature.properties.remark));
+
+        const counts = {};
+        const distances = [];
+
+        filteredData.forEach(feature => {
+          const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+          const color = getColor(feature.properties.remark);
+
+          const marker = L.circleMarker(latlng, {
+            radius: 8,
+            fillColor: color,
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          });
+
+          marker.bindPopup(`<strong>${feature.properties.name}</strong><br>${feature.properties.remark}<br><button class='btn btn-primary btn-sm' onclick='createRoute(${JSON.stringify(latlng)})'>Rute ke Sini</button>`);
+          markersLayerGroup.addLayer(marker);
+
+          counts[feature.properties.remark] = (counts[feature.properties.remark] || 0) + 1;
+
+          if (userLocationMarker) {
+            const userLatLng = userLocationMarker.getLatLng();
+            const distance = map.distance(userLatLng, latlng);
+            distances.push({
+              name: feature.properties.name,
+              distance: distance
+            });
+          }
+        });
+
+        // Update counts
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+          const category = checkbox.getAttribute('data-category');
+          document.getElementById(`count-${category.toLowerCase()}`).textContent = counts[category] || 0;
+        });
+
+        // Update analysis
+        const totalPlaces = Object.values(counts).reduce((a, b) => a + b, 0);
+        const highestCategory = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, "-");
+        const lowestCategory = Object.keys(counts).reduce((a, b) => counts[a] < counts[b] ? a : b, "-");
+
+        const percentagePlaces = Object.keys(counts).map(category => {
+          return `${category}: ${(counts[category] / totalPlaces * 100).toFixed(2)}%`;
+        }).join(', ');
+
+        const nearestLocation = distances.sort((a, b) => a.distance - b.distance)[0]?.name || "-";
+
+        document.getElementById('total-places').textContent = totalPlaces;
+        document.getElementById('highest-category').textContent = highestCategory;
+        document.getElementById('lowest-category').textContent = lowestCategory;
+        document.getElementById('percentage-places').textContent = percentagePlaces;
+        document.getElementById('nearest-location').textContent = nearestLocation;
+
+        // Create chart for category distribution
+        createCategoryChart(counts);
+      }
+
+      function createCategoryChart(counts) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        const categories = Object.keys(counts);
+        const values = Object.values(counts);
+
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: categories,
+            datasets: [{
+              label: 'Distribusi Kategori',
+              data: values,
+              backgroundColor: [
+                'green',
+                'blue',
+                'red',
+                'yellow',
+                'orange'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top'
+              }
+            }
+          }
+        });
+      }
+
+      function createRoute(destination) {
+        if (!userLocationMarker) {
+          alert("Lokasi Anda tidak ditemukan. Pastikan geolocation aktif.");
+          return;
+        }
+
+        const userLatLng = userLocationMarker.getLatLng();
+
+        if (routingControl) {
+          map.removeControl(routingControl);
+        }
+
+        routingControl = L.Routing.control({
+          waypoints: [
+            L.latLng(userLatLng.lat, userLatLng.lng),
+            L.latLng(destination[0], destination[1])
+          ],
+          routeWhileDragging: true,
+          showAlternatives: false,
+          geocoder: L.Control.Geocoder.nominatim(),
+          lineOptions: {
+            styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+          }
+        }).addTo(map);
+
+        routingControl.on('routesfound', function (e) {
+          const routes = e.routes[0];
+          const summary = routes.summary;
+          const instructions = routes.instructions;
+          const routeInfo = document.getElementById('route-info');
+
+          routeInfo.style.display = 'block';
+          routeInfo.innerHTML = `<strong>Rute:</strong><br>Jarak: ${(summary.totalDistance / 1000).toFixed(2)} km<br>Waktu: ${Math.round(summary.totalTime / 60)} menit<br><ul>${routes.instructions.map(instr => `<li>${instr.text}</li>`).join('')}</ul>`;
+        });
+
+        routingControl.on('routingerror', function (e) {
+          alert("Rute tidak dapat ditemukan. Silakan coba lokasi lain atau periksa koneksi internet Anda.");
+          console.error(e);
+        });
+      }
+
+      document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateMarkers);
+      });
+
+      document.getElementById('filter-search').addEventListener('input', function (e) {
+        const search = e.target.value.toLowerCase();
+
+        document.querySelectorAll('#filter-list li').forEach(li => {
+          const label = li.querySelector('label');
+          const labelText = label.textContent.toLowerCase();
+
+          if (labelText.includes(search)) {
+            li.style.display = '';
+            const regex = new RegExp(`(${search})`, 'gi');
+            label.innerHTML = labelText.replace(regex, '<span class="highlight">$1</span>');
+          } else {
+            li.style.display = 'none';
+            label.innerHTML = labelText; // Reset highlight if hidden
+          }
+        });
+      });
+
+      addCurrentLocation();
+      updateMarkers();
+    </script>
+  </body>
+</html>
+{% endblock %}

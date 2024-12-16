@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<div class="profile-header text-white py-5">
+  <h2 class="mb-3">Profil</h2>
+  <p>Web Developer & Geografi Enthusiast</p>
+</div>
+
+<div class="d-flex justify-content-center align-items-center flex-column text-center my-5">
+  <img src="/static/images/profile.jpeg" alt="Foto Profil" class="img-fluid rounded-circle mb-3 profile-img" />
+  <h4 class="text">Pandu Putra Mulwanda</h4>
+  <p class="text-muted">"Menyelami dunia melalui data dan peta geografi."</p>
+  <div class="social-icons mb-4">
+    <a href="https://github.com/pandumulwanda" target="_blank"><i class="fab fa-github fa-2x mx-2"></i></a>
+    <a href="https://www.instagram.com/pandumulwanda" target="_blank"><i class="fab fa-instagram fa-2x mx-2"></i></a>
+    <a href="https://www.linkedin.com/in/pandumulwanda" target="_blank"><i class="fab fa-linkedin fa-2x mx-2"></i></a>
+    <a href="https://wa.me/6281234567890" target="_blank"><i class="fab fa-whatsapp fa-2x mx-2"></i></a>
+  </div>
+</div>
+
+<div class="about-section text-center my-5">
+  <h5>Tentang Saya</h5>
+  <p class="text-muted">Saya adalah seorang pengembang web dengan minat besar dalam data geografi dan peta interaktif. Saya memiliki pengalaman dalam pengembangan web dan pemetaan GIS menggunakan teknologi modern.</p>
+  <h5 class="mt-4">Keterampilan</h5>
+  <ul class="list-inline">
+    <li class="list-inline-item badge badge-primary">HTML</li>
+    <li class="list-inline-item badge badge-secondary">CSS</li>
+    <li class="list-inline-item badge badge-info">JavaScript</li>
+    <li class="list-inline-item badge badge-success">Python</li>
+    <li class="list-inline-item badge badge-warning">GIS Mapping</li>
+  </ul>
+</div>
+
+{% endblock %}
