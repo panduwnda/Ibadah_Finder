@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -184,11 +187,24 @@
     </div>
 
     <script>
+      
       var pointsData = {{ points | safe }};
       var map = L.map('map').setView([-5.4298, 105.2615], 12);
+      var kecamatan = {{ kecamatan | safe }}; // Data GeoJSON untuk kecamatan
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      L.geoJSON(kecamatan, { // Tambahkan batas kecamatan ke peta
+        style: {
+          color: 'blue',
+          weight: 2,
+          fillOpacity: 0.1
+        },
+        onEachFeature: (feature, layer) => {
+          layer.bindPopup(`<strong>${feature.properties.name}</strong><br>Remark: ${feature.properties.remark}`);
+        }
       }).addTo(map);
 
       let markersLayerGroup = L.layerGroup().addTo(map);
