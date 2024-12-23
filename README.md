@@ -1,4 +1,4 @@
-# Sistem Informasi Pariwisata Lampung (SIPALUNG)
+# Sistem Informasi Pencarian Tempat Ibadah (Ibadah_Finder)
 
 | Nama                  | NIM       |
 | --------------------  | --------- |
