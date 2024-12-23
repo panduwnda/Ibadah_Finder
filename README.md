@@ -91,4 +91,4 @@ IBADAH_FINDER/
     ```
 3. Buka browser pada alamat http://127.0.0.1:5000
 4. Gunakan sidebar untuk mencari dan memfilter lokasi wisata.
-5. Klik "Login", "Tambah Titik", "Tambah Area", ataupun "Hapus Data" untuk mengupdate data wisata baru.
+5. Klik "Login", "Tambah Titik", "Tambah Area", ataupun "Hapus Data" untuk mengupdate data sarana tempat ibadah.
