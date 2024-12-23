@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.css">
+    <!-- Tambahkan plugin Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
@@ -181,6 +184,10 @@
           <li><i class="fas fa-arrow-down"></i><strong>Kategori dengan Jumlah Terendah:</strong> <span id="lowest-category">-</span></li>
           <li><i class="fas fa-percentage"></i><strong>Persentase Tempat Ibadah:</strong> <span id="percentage-places">-</span></li>
           <li><i class="fas fa-map-marker-alt"></i><strong>Lokasi Terdekat dari Anda:</strong> <span id="nearest-location">-</span></li>
+          <div class="btn-group mt-3">
+            <button class="btn btn-success" onclick="routeToNearest()">Rute ke Tempat Terdekat</button>
+          </div>
+          
         </ul>
         <canvas id="categoryChart"></canvas>
       </div>
@@ -191,6 +198,7 @@
       var pointsData = {{ points | safe }};
       var map = L.map('map').setView([-5.4298, 105.2615], 12);
       var kecamatan = {{ kecamatan | safe }}; // Data GeoJSON untuk kecamatan
+
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -247,6 +255,61 @@
         }
       }
 
+      function routeToNearest() {
+        if (!userLocationMarker) {
+          alert('Lokasi pengguna tidak ditemukan!');
+          return;
+        }
+      
+        const userLatLng = userLocationMarker.getLatLng();
+      
+        // Ambil data lokasi yang telah difilter berdasarkan kategori
+        const selectedCategories = Array.from(document.querySelectorAll('.filter-checkbox:checked'))
+          .map(checkbox => checkbox.getAttribute('data-category'));
+      
+        const filteredData = pointsData.features.filter(feature => 
+          selectedCategories.includes(feature.properties.remark)
+        );
+      
+        if (filteredData.length === 0) {
+          alert('Tidak ada lokasi yang tersedia untuk kategori yang dipilih!');
+          return;
+        }
+      
+        // Hitung jarak ke lokasi yang difilter dan cari yang terdekat
+        const distances = filteredData.map(feature => {
+          const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+          const distance = map.distance(userLatLng, latlng);
+          return {
+            name: feature.properties.name,
+            latlng: latlng,
+            distance: distance
+          };
+        });
+      
+        const nearestPoint = distances.sort((a, b) => a.distance - b.distance)[0];
+      
+        if (!nearestPoint) {
+          alert('Tidak ada lokasi yang tersedia untuk kategori yang dipilih!');
+          return;
+        }
+      
+        // Tambahkan rute ke lokasi terdekat
+        if (routingControl) {
+          map.removeControl(routingControl);
+        }
+        routingControl = L.Routing.control({
+          waypoints: [
+            userLatLng,
+            L.latLng(nearestPoint.latlng)
+          ],
+          routeWhileDragging: true,
+          show: true
+        }).addTo(map);
+      
+        alert(`Rute ke lokasi terdekat (${nearestPoint.name}) dari kategori yang dipilih sedang ditampilkan.`);
+      }
+      
       function updateMarkers() {
         markersLayerGroup.clearLayers();
         if (routingControl) {
