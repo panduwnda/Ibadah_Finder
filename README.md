@@ -33,7 +33,7 @@ Ibadah Finder" adalah sebuah sistem informasi geografis berbasis web yang diranc
     - Daftar tempat ibadah terorganisir untuk memudahkan eksplorasi
 
 4. **Analisis Data Spasial**
-    - Menampilkan analisis jarak, jumlah tempat ibadah
+    - Menampilkan analisis jarak, jumlah tempat ibadah, dan tempat ibadah terdekat
 
 ## Teknologi yang Digunakan
 
