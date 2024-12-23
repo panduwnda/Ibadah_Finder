@@ -18,6 +18,7 @@
 
     - Peta dinamis dengan berbagai layer (OpenStreetMap, Satellite, Topographic)
     - Navigasi, penentuan rute, serta estimasi jarak dan waktu tempuh
+    - Navigasi (Routing) ke tempat ibadah terdekat dari user
     - Tampilan color marker yang berbeda untuk setiap kategori tempat ibadah
 
 2. **Manajemen Data Wisata**
