@@ -10,7 +10,7 @@
 
 ## Deskripsi Proyek
 
-Ibadah Finder" adalah sebuah sistem informasi geografis berbasis web yang dirancang untuk membantu masyarakat menemukan tempat ibadah di wilayah Bandar Lampung. Sistem ini menyediakan informasi lokasi masjid, gereja, pura, wihara, dan tempat ibadah lainnya dengan fitur pemetaan interaktif. Dengan memanfaatkan teknologi pemetaan modern, pengguna dapat dengan mudah mencari dan menavigasi lokasi tempat ibadah yang mereka butuhkan.
+"Ibadah Finder" adalah sebuah sistem informasi geografis berbasis web yang dirancang untuk membantu masyarakat menemukan tempat ibadah di wilayah Bandar Lampung. Sistem ini menyediakan informasi lokasi masjid, gereja, pura, wihara, dan tempat ibadah lainnya dengan fitur pemetaan interaktif. Dengan memanfaatkan teknologi pemetaan modern, pengguna dapat dengan mudah mencari dan menavigasi lokasi tempat ibadah yang mereka butuhkan.
 
 ## Fitur Utama
 
