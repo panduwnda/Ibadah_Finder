@@ -4,9 +4,9 @@
 | --------------------  | --------- |
 | Bani Adam Tampubolon  | 121140187 |
 | Zahra Areefa Ananta   | 121140138 |
-| Pandu Putra Mulwanda  | 121140    |
-| Dila Ayu Prastita     | 121140    |
-| Varell Anthonio       | 121140    |
+| Pandu Putra Mulwanda  | 121140176 |
+| Dila Ayu Prastita     | 121140075 |
+| Varell Anthonio       | 12114122  |
 
 ## Deskripsi Proyek
 
@@ -21,7 +21,7 @@
     - Navigasi (Routing) ke tempat ibadah terdekat dari user
     - Tampilan color marker yang berbeda untuk setiap kategori tempat ibadah
 
-2. **Manajemen Data Wisata**
+2. **Manajemen Data Tempat Ibadah**
 
     - Penambahan titik tempat ibadah
     - Pembentukan area wilayah per kecamatan dengan polygon
