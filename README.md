@@ -33,7 +33,7 @@ Ibadah Finder" adalah sebuah sistem informasi geografis berbasis web yang diranc
     - Daftar tempat ibadah terorganisir untuk memudahkan eksplorasi
 
 4. **Analisis Data Spasial**
-    - Menampilkan analisis jarak, jumlah tempat ibadah
+    - Menampilkan analisis jarak, jumlah tempat ibadah, dan tempat ibadah terdekat
 
 ## Teknologi yang Digunakan
 
@@ -91,4 +91,4 @@ IBADAH_FINDER/
     ```
 3. Buka browser pada alamat http://127.0.0.1:5000
 4. Gunakan sidebar untuk mencari dan memfilter lokasi wisata.
-5. Klik "Login", "Tambah Titik", "Tambah Area", ataupun "Hapus Data" untuk mengupdate data wisata baru.
+5. Klik "Menu Admin", "Tambah Titik", ataupun "Hapus Data" untuk mengupdate data sarana tempat ibadah.
